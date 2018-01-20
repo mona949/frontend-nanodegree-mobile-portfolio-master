@@ -1,7 +1,26 @@
 # frontend-nanodegree-mobile-portfolio
 P4 Udacity Front-end Nanodegree Program
-### Optimizations
-- Brought some of the small scripts and styles inside the `head` element to reduce the CRP.
-- Mark the print css link as media type `print` to reduce the CRP overhead for normal displays
-- Reduce the size of the pizza image by scaling it down to the actual display dimensions
-- Change the image src to `b64` to reduce CRP (I understand this might actually increase the CPU usage compared to jpeg/png and also lowers performance for cached websites, but was just trying to decrease the CRP as much as possible)
+### Optimizing html
+-minified css and js
+-async js 
+-optimized the images
+### Optimizing js 
+-change selectorAll to getElement
+-remove some functions and variables from for loop 
+### How to run 
+To run the website you need first to download it from github.
+
+then you can setup a local server  to test the website on page speed as follows:
+
+1- download and run localhost
+```
+cd /path/to/your-project-folder 
+python -m SimpleHTTPServer 8080
+
+```
+2- Download and run ngrok 
+```
+cd /path/to/your-project-folder
+./ngrok http 8080
+
+```
