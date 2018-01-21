@@ -228,16 +228,17 @@ var resizePizzas = function (size) {
 	}
 	changePizzaSizes(size);
 	// User Timing API is awesome
-	window.performance.mark("mark_end_resize");
-	window.performance.measure("measure_pizza_resize", "mark_start_resize", "mark_end_resize");
+window.performance.mark("mark_end_resize");
+window.performance.measure("measure_pizza_resize", "mark_start_resize", "mark_end_resize");
 	var timeToResize = window.performance.getEntriesByName("measure_pizza_resize");
 	console.log("Time to resize pizzas: " + timeToResize[timeToResize.length - 1].duration + "ms");
 };
 window.performance.mark("mark_start_generating"); // collect timing data
 // This for-loop actually creates and appends all of the pizzas when the page loads
+// declare the pizzasDiv variable outside the loop, so only DOM call is made one.
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-	var pizzasDiv = document.getElementById("randomPizzas");
-	pizzasDiv.appendChild(pizzaElementGenerator(i));
+pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 // User Timing API again. These measurements tell you how long it took to generate the initial pizzas
 window.performance.mark("mark_end_generating");
@@ -260,23 +261,33 @@ function logAverageFrame(times) { // times is the array of User Timing measureme
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
-	frame++;
-	window.performance.mark("mark_start_frame");
-	//again replace querySelectorAll with getElementsByClassName  
-	var items = document.getElementsByClassName('mover');
-	// document.body.scrollTop is no longer supported in Chrome.
-	var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-	//for loop
-	var scrolCount = (scrollTop / 1250);
-	for (var i = 0; i < items.length; i++) {
-		var phase = Math.sin(scrolCount + (i % 5));
-		items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-	}
-	// User Timing API to the rescue again. Seriously, it's worth learning.
-	// Super easy to create custom metrics.
-	window.performance.mark("mark_end_frame");
-	window.performance.measure("measure_frame_duration", "mark_start_frame", "mark_end_frame");
-	if (frame % 10 === 0) {
+  frame++;
+  window.performance.mark("mark_start_frame");
+
+  // document.body.scrollTop is no longer supported in Chrome.
+  var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  // Call DOM element using class name
+  var items = document.getElementsByClassName('mover');
+
+  // Declare phases array once 
+  var phases = [];
+  // Loop and push phases 
+  for (var p = 0; p < 5; p++) {
+    phases.push(Math.sin((scrollTop / 1250) + p));
+  }
+
+  //Loop through the items, And declare len variable as an end value of the loop just once
+  for (var i = 0, len = items.length; i < len; i++) {
+    // Use phases array instead
+    // var phase = Math.sin((scrollTop / 1250) + (i % 5));
+    items[i].style.left = items[i].basicLeft + 100 * phases[i % 5] + 'px';
+  }
+	
+// User Timing API to the rescue again. Seriously, it's worth learning.
+// Super easy to create custom metrics.
+window.performance.mark("mark_end_frame");
+window.performance.measure("measure_frame_duration", "mark_start_frame", "mark_end_frame");
+if (frame % 10 === 0) {
 		var timesToUpdatePosition = window.performance.getEntriesByName("measure_frame_duration");
 		logAverageFrame(timesToUpdatePosition);
 	}
@@ -287,16 +298,19 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function () {
 	var cols = 8;
 	var s = 256;
-	for (var i = 0; i < 200; i++) {
-		var elem = document.createElement('img');
-		elem.className = 'mover';
-		elem.src = "images/pizza.png";
-		elem.style.height = "100px";
-		elem.style.width = "73.333px";
-		elem.basicLeft = (i % cols) * s;
-		elem.style.top = (Math.floor(i / cols) * s) + 'px';
-		//again replace querySelector with getElementById
-		document.getElementById("movingPizzas1").appendChild(elem);
-	}
-	updatePositions();
-});
+// Call DOM element by Id movingPizzas1
+  var movingPizzaElement = document.getElementById('movingPizzas1');
+  var NRows = screen.height / s * cols;
+  // console.log(NRows);
+  for (var i = 0, elem; i < NRows; i++) {
+    elem = document.createElement('img');
+    elem.className = 'mover';
+    elem.src = "images/pizza.png";
+    elem.style.height = "100px";
+    elem.style.width = "73.333px";
+    elem.basicLeft = (i % cols) * s;
+    elem.style.top = (Math.floor(i / cols) * s) + 'px';
+    movingPizzaElement.appendChild(elem);
+  }
+  updatePositions();
+});	

@@ -1,26 +1,33 @@
 # frontend-nanodegree-mobile-portfolio
 P4 Udacity Front-end Nanodegree Program
-### Optimizing html
--minified css and js
--async js 
--optimized the images
-### Optimizing js 
--change selectorAll to getElement
--remove some functions and variables from for loop 
-### How to run 
-To run the website you need first to download it from github.
 
-then you can setup a local server  to test the website on page speed as follows:
 
-1- download and run localhost
-```
-cd /path/to/your-project-folder 
-python -m SimpleHTTPServer 8080
+#### How to start
+* Serve on localhost If you're familiar with python run these commands on your terminal
 
 ```
-2- Download and run ngrok 
-```
-cd /path/to/your-project-folder
-./ngrok http 8080
+git clone https://github.com/mona949/frontend-nanodegree-mobile-portfolio-master
+cd frontend-nanodegree-mobile-portfolio-master
+sudo python -m SimpleHTTPServer 80 
 
 ```
+
+Open your browser and navigate to `http://localhost`
+
+* Live website
+[Here](https://github.com/mona949/frontend-nanodegree-mobile-portfolio-master)
+
+### Optimizing index.html
+-External link to `style.css` has been removed, Implemented internal `<style>` instead.
+-media=print add to `<link href="css/print.css" rel="stylesheet" media="print">`
+-async js `<script async src="https://www.google-analytics.com/analytics.js"></script>`
+-minimize  the images size 
+### Optimizing main.js 
+-Removed `determineDx()` function.
+-replace `selectorAll` with `getElement`
+-remove some functions and variables outside the loop 
+-update `changePizzaSizes()` and `updatePosition()` functions.
+## Optimizing pizza.html
+-minimize  the images size 
+-async js `<script async src="js/perfmatters.js"></script>`
+-remove .js from the head and add it in the last .
